@@ -2,3 +2,21 @@
 	margin:5px;
 	
 }
+
+ul#colorlist {
+	position:absolute;
+	left:500px;
+	top:30px;
+	border:1px solid #ccc;
+	height:400px;
+	overflow-y:scroll;
+}
+
+ul#colorlist li {
+	padding:5px 5px 5px 30px;
+	border-bottom:1px solid #ccc;
+}
+
+ul#colorlist li.selected {
+	background:#ccf;
+}

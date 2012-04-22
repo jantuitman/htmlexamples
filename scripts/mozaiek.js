@@ -6,12 +6,13 @@
  var cursorX = 0;
  var cursorY= 0;
  var mainCardset;
+ var colorList;
 
 
 function blit(forceCursor) {
 	var ctx = gCanvas.getContext("2d");
 	ctx.drawImage(backbuffer,0,0)
-	blink =  1 - blink;
+	blink =  1;
 	if (blink || forceCursor ) {
 		ctx.fillStyle='rgba(255,255,255,0.75)'
 		ctx.fillRect(cursorX*80,cursorY*80,80,80);
@@ -22,15 +23,18 @@ function blit(forceCursor) {
 
 function setTile(tileId,x,y) {
 	var ctx = backbuffer.getContext("2d");
-	ctx.drawImage(mainCardset.tiles[tileId].get(0),x*80,y*80);
+	var colors = colorList.getSelectedColors();
+	ctx.drawImage(mainCardset.produceTile(tileId,colors,80,80),x*80,y*80);
 	blit();
 }
 
 
-function setupList() {
+function setupControls() {
 	mainCardset = new CardSet1();
 	mainCardset.tiles={};
 	
+	
+	// tilelist
 	for (var i=0; i<mainCardset.numberOfCards;i++) {
 		var c=document.createElement("canvas");
 		c.width = 80
@@ -45,11 +49,15 @@ function setupList() {
 		$("#tilelist").append(o);
 		
 	}
-	
 	$(document).on("click","#tilelist img",function (e) {
 		var img = $(e.target)
 		setTile(img.data('tileId'),cursorX,cursorY);
 	});
+	
+	
+	// color list
+	colorList = new ColorList($('#colorlist'));
+	
 }
 
 
@@ -87,8 +95,8 @@ function setupCursor() {
 $(document).ready(function () {
 	
 	console.log("go for it");
-	setupList()
-	setupCanvas()
+	setupControls()
+	setupCanvas();
 	setupCursor();
 });
 

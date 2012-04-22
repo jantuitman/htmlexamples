@@ -8,6 +8,16 @@ function CardSet1()
 
 CardSet1.prototype.numberOfCards=100
 
+/** todo: should not be in a specific card set */
+CardSet1.prototype.produceTile=function (tileId,colors,width,height) {
+	var canvas = document.createElement('canvas');
+	canvas.width  = width;
+	canvas.height = height;
+	this.render(canvas,tileId,colors.color1,colors.color2)
+	return canvas;
+} 
+
+
 CardSet1.prototype.render=function (canvas,index,color1,color2) {
 		var params= {
 			canvas: canvas,
