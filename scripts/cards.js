@@ -1,37 +1,41 @@
 
 
-function CardManager()
+function CardManager(updater)
 {
+  this.activeSet=0;
+  this.sets = [new CardSet1(),new CardSet2()]
+  this.updater = updater;
+}
 
+CardManager.prototype.getSet=function () {
+	return this.sets[this.activeSet];
+}
+
+CardManager.prototype.setSelector=function () {
+	var self = this;
+	var s = '<select>'
+	for (var i=0;i<this.sets.length ; i++) {
+		s+='<option value="'+i+'" '+(this.activeSet==i?'selected':'')+' >'+this.sets[i].name+'</option>';
+	}	
+	s+='</select>'
+	var selector=$(s).change(function (e) {
+			self.activeSet=$(e.target).val();
+			self.updater.update(self.activeSet);
+	});
+	return selector;
 }
 
 CardManager.prototype.produceTile = function (setId,tileId,colors,width,height) {
-
-
-}
-
-
-
-
-function CardSet1()
-{
-
-
-}
-
-CardSet1.prototype.numberOfCards=100
-
-/** todo: should not be in a specific card set */
-CardSet1.prototype.produceTile=function (tileId,colors,width,height) {
+		
+	var activeSet=this.sets[setId];
 	var canvas = document.createElement('canvas');
 	canvas.width  = width;
 	canvas.height = height;
-	this.render(canvas,tileId,colors.color1,colors.color2)
+	this.render(canvas,activeSet,tileId,colors.color1,colors.color2)
 	return canvas;
-} 
+}
 
-
-CardSet1.prototype.render=function (canvas,index,color1,color2) {
+CardManager.prototype.render=function (canvas,activeSet,index,color1,color2) {
 		var params= {
 			canvas: canvas,
 			color1: color1,
@@ -40,12 +44,13 @@ CardSet1.prototype.render=function (canvas,index,color1,color2) {
 			w : canvas.width,
 			h : canvas.height
 		}
-		var f = this["render_"+index]
+		var f = activeSet["render_"+index]
 		if (f) {
 		    // a canvas always begins in the background color.
 		    params.ctx.fillStyle = color2
 		    params.ctx.fillRect(0,0,params.w,params.h);
 		    params.ctx.fillStyle = color1
+		    params.ctx.strokeStyle = color1
 			f(params);
 			return true;
 		}
@@ -54,6 +59,17 @@ CardSet1.prototype.render=function (canvas,index,color1,color2) {
 		}
 }
 
+
+/* cardset1 */
+
+function CardSet1()
+{
+
+
+}
+
+CardSet1.prototype.name="basic blocks"
+CardSet1.prototype.numberOfCards=100
 
 CardSet1.prototype.render_0=function (o) {
 }
@@ -322,4 +338,86 @@ CardSet1.prototype.render_14=function (o) {
 }
 
 
+/* cardset1 */
 
+function CardSet2()
+{
+
+
+}
+
+CardSet2.prototype.name="lines and waves"
+CardSet2.prototype.numberOfCards=100
+
+CardSet2.prototype.render_0=function (o) {
+}
+
+CardSet2.prototype.render_1=function (o) {
+	with(o) {
+	  for (var i=0;i<h;i+=10) {
+	      ctx.fillRect(0,i,w,5);	
+		}
+	}
+}
+
+CardSet2.prototype.render_2=function (o) {
+	with(o) {
+	  for (var i=0;i<w;i+=10) {
+	      ctx.fillRect(i,0,5,h);	
+		}
+	}
+}
+
+CardSet2.prototype.render_3=function (o) {
+	with(o) {
+	  for (var i=0;i<h;i+=10) {
+	      ctx.lineWidth=5
+	      ctx.beginPath()
+				ctx.moveTo(0,i+2.5);      
+	      ctx.bezierCurveTo(w/4,i+7.5, 3*w/4,i+7.5 , w,i+2.5);	
+	      ctx.stroke();
+	      ctx.lineWidth=1;
+		}
+	}
+}
+
+CardSet2.prototype.render_4=function (o) {
+	with(o) {
+	  for (var i=0;i<w;i+=10) {
+	      ctx.lineWidth=5
+	      ctx.beginPath()
+				ctx.moveTo(i+2.5,0);      
+	      ctx.bezierCurveTo(i+7.5, h/4,  i+7.5, 3*h/4,  i+2.5,h);	
+	      ctx.stroke();
+	      ctx.lineWidth=1;
+		}
+	}
+}
+
+CardSet2.prototype.render_5=function (o) {
+	with(o) {
+	  for (var i=0;i<h;i+=10) {
+	      ctx.lineWidth=5
+	      ctx.beginPath()
+				ctx.moveTo(0,i+2.5);      
+	      ctx.bezierCurveTo(w/8,i+7.5, 3*w/8,i+7.5 , 0.5 * w,i+2.5);	
+	      ctx.bezierCurveTo(5*w/8,i+7.5, 7*w/8,i+7.5 , w,i+2.5);	
+	      ctx.stroke();
+	      ctx.lineWidth=1;
+		}
+	}
+}
+
+CardSet2.prototype.render_6=function (o) {
+	with(o) {
+	  for (var i=0;i<w;i+=10) {
+	      ctx.lineWidth=5
+	      ctx.beginPath()
+				ctx.moveTo(i+2.5,0);      
+	      ctx.bezierCurveTo(i+7.5, h/8,  i+7.5, 3*h/8,  i+2.5,0.5 *h);	
+	      ctx.bezierCurveTo(i+7.5, 5*h/8,  i+7.5, 7*h/8,  i+2.5,h);	
+	      ctx.stroke();
+	      ctx.lineWidth=1;
+		}
+	}
+}
