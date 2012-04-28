@@ -1,5 +1,18 @@
 
 
+function CardManager()
+{
+
+}
+
+CardManager.prototype.produceTile = function (setId,tileId,colors,width,height) {
+
+
+}
+
+
+
+
 function CardSet1()
 {
 

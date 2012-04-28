@@ -1,6 +1,7 @@
 (function () {
 
  var gCanvas;
+ var gDrawing={};
  var backbuffer;
  var blink = 0;
  var cursorX = 0;
@@ -24,7 +25,16 @@ function blit(forceCursor) {
 function setTile(tileId,x,y) {
 	var ctx = backbuffer.getContext("2d");
 	var colors = colorList.getSelectedColors();
-	ctx.drawImage(mainCardset.produceTile(tileId,colors,80,80),x*80,y*80);
+	if (tileId==null) {
+			if (gDrawing[y][x]) {
+				tileId=gDrawing[y][x].tileId;
+			}
+	}
+	if (tileId !=null) ctx.drawImage(mainCardset.produceTile(tileId,colors,80,80),x*80,y*80);
+	gDrawing[y][x] = {
+		tileId: tileId,
+		colors: colors
+	}
 	blit();
 }
 
@@ -34,12 +44,32 @@ function setupControls() {
 	mainCardset.tiles={};
 	
 	
+	$(document).on("click","#tilelist img",function (e) {
+		var img = $(e.target)
+		setTile(img.data('tileId'),cursorX,cursorY);
+	});
+	
+	
+	// color list
+	colorList = new ColorList($('#colorlist'), {
+		update: function () {
+					setTile(null,cursorX,cursorY);		
+					updateTileList();
+		}
+	});
+	updateTileList();
+}
+
+function updateTileList() {
+
 	// tilelist
+	var cc = colorList.getSelectedColors();
+	$("#tilelist").html('');
 	for (var i=0; i<mainCardset.numberOfCards;i++) {
 		var c=document.createElement("canvas");
 		c.width = 80
 		c.height = 80
-		if (! mainCardset.render(c,i,'rgb(255,0,0)','rgb(0,255,0)')) break;
+		if (! mainCardset.render(c,i,cc.color1,cc.color2)) break;
 		var dataUrl =  c.toDataURL("image/png");
 		var img = document.createElement('img');
 		img.src = dataUrl;
@@ -49,16 +79,9 @@ function setupControls() {
 		$("#tilelist").append(o);
 		
 	}
-	$(document).on("click","#tilelist img",function (e) {
-		var img = $(e.target)
-		setTile(img.data('tileId'),cursorX,cursorY);
-	});
-	
-	
-	// color list
-	colorList = new ColorList($('#colorlist'));
-	
+
 }
+
 
 
 function setupCanvas() {
@@ -66,13 +89,17 @@ function setupCanvas() {
 	backbuffer.width= 480;
 	backbuffer.height = 480;
 	
-    gCanvas = document.getElementById("mainCanvas");
-    
-    var ctx =backbuffer.getContext("2d");
-    ctx.fillStyle="rgb(128,128,128)"
-    ctx.fillRect(0,0,backbuffer.width,backbuffer.height);
-    
-    blit(); 
+	gDrawing={};
+	for (var y=0;y<6;y++) {
+		gDrawing[y]={};
+	}
+	gCanvas = document.getElementById("mainCanvas");
+	
+	var ctx =backbuffer.getContext("2d");
+	ctx.fillStyle="rgb(128,128,128)"
+	ctx.fillRect(0,0,backbuffer.width,backbuffer.height);
+	
+	blit(); 
 }
 
 
