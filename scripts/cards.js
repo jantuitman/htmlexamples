@@ -25,17 +25,17 @@ CardManager.prototype.setSelector=function () {
 	return selector;
 }
 
-CardManager.prototype.produceTile = function (setId,tileId,colors,width,height) {
+CardManager.prototype.produceTile = function (setId,tileId,colors,width,height,flipX,flipY) {
 		
 	var activeSet=this.sets[setId];
 	var canvas = document.createElement('canvas');
 	canvas.width  = width;
 	canvas.height = height;
-	this.render(canvas,activeSet,tileId,colors.color1,colors.color2)
+	this.render(canvas,activeSet,tileId,colors.color1,colors.color2,flipX,flipY)
 	return canvas;
 }
 
-CardManager.prototype.render=function (canvas,activeSet,index,color1,color2) {
+CardManager.prototype.render=function (canvas,activeSet,index,color1,color2,flipX,flipY) {
 		var params= {
 			canvas: canvas,
 			color1: color1,
@@ -44,6 +44,18 @@ CardManager.prototype.render=function (canvas,activeSet,index,color1,color2) {
 			w : canvas.width,
 			h : canvas.height
 		}
+		// flipping coordinate spaces.
+		params.ctx.save();
+		console.log("flip "+flipX+" "+flipY);
+		if (flipX) {
+			params.ctx.translate(params.w,0);
+			params.ctx.scale(-1,1);
+		}
+		if (flipY) {
+			params.ctx.translate(0,params.h);
+			params.ctx.scale(1,-1);
+		}
+		
 		var f = activeSet["render_"+index]
 		if (f) {
 		    // a canvas always begins in the background color.
@@ -52,9 +64,11 @@ CardManager.prototype.render=function (canvas,activeSet,index,color1,color2) {
 		    params.ctx.fillStyle = color1
 		    params.ctx.strokeStyle = color1
 			f(params);
+			params.ctx.restore();
 			return true;
 		}
 		else {
+			params.ctx.restore();
 			return false;
 		}
 }

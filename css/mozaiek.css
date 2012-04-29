@@ -12,6 +12,16 @@ ul#colorlist {
 	overflow-y:scroll;
 }
 
+div#flipping {
+	position:absolute;
+	left:700px;
+	top:30px;
+	border:1px solid #ccc;
+	height:100px;
+	overflow-y:scroll;
+
+}
+
 ul#colorlist li {
 	padding:5px 5px 5px 30px;
 	border-bottom:1px solid #ccc;

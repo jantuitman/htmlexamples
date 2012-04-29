@@ -10,32 +10,52 @@
  var colorList;
 
 
-function blit(forceCursor) {
+function blit(hideCursor) {
 	var ctx = gCanvas.getContext("2d");
 	ctx.drawImage(backbuffer,0,0)
 	blink =  1;
-	if (blink || forceCursor ) {
-		ctx.fillStyle='rgba(255,255,255,0.75)'
-		ctx.fillRect(cursorX*80,cursorY*80,80,80);
-		// next time we want the cursor to hang around if the forceCursor = true.
-		if (forceCursor) blink = 0;	
-	}	
+	if (hideCursor ) return;
+	ctx.fillStyle='rgba(255,255,255,0.75)'
+	ctx.fillRect(cursorX*80,cursorY*80,80,80);
 }
 
-function setTile(activeSet,tileId,x,y) {
+/** setTile can be called in 2 instances:
+    when the tile needs redrawing because a different color was selected.
+    when a tile is picked.
+    
+    current implementation: tileID == null: different color selected,
+    fetch all attributes from model except color. tileId != null: different tile Selected.
+    take all input from function parameters (is gui controls).
+    
+    
+    target implementation: whenever the selection changes update all controls with value of the tile.
+    whenever any control (or tile) is clicked, always use all values from the control.
+    that way, it is not neccesary to track what the user has changed an what not.
+    
+    problem: colorlist = do we need to update all tiles when something in the colorlist changes?
+    
+    
+     
+ */
+function setTile(activeSet,tileId,x,y,flipX,flipY) {
+  console.log("FLIP "+flipX+" "+flipY);
 	var ctx = backbuffer.getContext("2d");
 	var colors = colorList.getSelectedColors();
 	if (tileId==null) {
 			if (gDrawing[y][x]) {
 				tileId=gDrawing[y][x].tileId;
 				activeSet=gDrawing[y][x].activeSet;
+				flipX=gDrawing[y][x].flipX;
+				flipY=gDrawing[y][x].flipY;
 			}
 	}
-	if (tileId !=null) ctx.drawImage(tileManager.produceTile(activeSet,tileId,colors,80,80),x*80,y*80);
+	if (tileId !=null) ctx.drawImage(tileManager.produceTile(activeSet,tileId,colors,80,80,flipX,flipY),x*80,y*80);
 	gDrawing[y][x] = {
 	  activeSet: activeSet,
 		tileId: tileId,
-		colors: colors
+		colors: colors,
+		flipX : flipX,
+		flipY : flipY
 	}
 	blit();
 }
@@ -50,9 +70,20 @@ function setupControls() {
 	//mainCardset.tiles={};
 	//tileManager.activeSet=0;
 	
+	$(document).keypress(function (e) {
+			// 'h' toggles cursor.
+			if (e.which == 104) {
+						blit(true);		
+			}
+	});
+	
 	$(document).on("click","#tilelist img",function (e) {
 		var img = $(e.target)
-		setTile(tileManager.activeSet,img.data('tileId'),cursorX,cursorY);
+		setTile(tileManager.activeSet,img.data('tileId'),cursorX,cursorY,
+				($("#flip_h").attr('checked') != null),
+				($("#flip_v").attr('checked') != null)
+				
+		);
 	});
 	
 	
@@ -124,7 +155,7 @@ function setupCursor() {
     	var y = e.clientY - gCanvas.offsetTop;
     	cursorX = Math.floor(x/80);
     	cursorY = Math.floor(y/80); 		
-    	blit(true);
+    	blit();
 	});
 }
 
