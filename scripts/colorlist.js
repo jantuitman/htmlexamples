@@ -50,7 +50,7 @@ ColorList.prototype.colorButton=function(index,propertyName) {
 	var btn = new ColorButton(c,{
 		update: function (c) {
 			self.arr[index][propertyName]=c;
-			self.changeSelection();
+			self.updater.updateColors(index,self.arr[index]);
 		}
 	});
 	return btn.render();
@@ -70,7 +70,7 @@ ColorList.prototype.update=function () {
 }
 
 ColorList.prototype.changeSelection=function () {
-	 this.updater.update(this.getSelectedColors());	
+	 this.updater.update(this.selectedIndex);	
 }
 
 
