@@ -60,6 +60,7 @@ CardManager.prototype.render=function (canvas,activeSet,index,color1,color2,flip
 		if (f) {
 		    // a canvas always begins in the background color.
 		    params.ctx.fillStyle = color2
+		    console.log("color2 = "+color2);
 		    params.ctx.fillRect(0,0,params.w,params.h);
 		    params.ctx.fillStyle = color1
 		    params.ctx.strokeStyle = color1

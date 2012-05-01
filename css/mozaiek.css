@@ -12,6 +12,15 @@ ul#colorlist {
 	overflow-y:scroll;
 }
 
+ul#layerlist {
+	position:absolute;
+	left:700px;
+	top:150px;
+	border:1px solid #ccc;
+	height:250px;
+	overflow-y:scroll;
+}
+
 div#flipping {
 	position:absolute;
 	left:700px;
@@ -22,12 +31,12 @@ div#flipping {
 
 }
 
-ul#colorlist li {
+ul#colorlist li, ul#layerlist li {
 	padding:5px 5px 5px 30px;
 	border-bottom:1px solid #ccc;
 }
 
-ul#colorlist li.selected {
+ul#colorlist li.selected, ul#layerlist li.selected {
 	background:#ccf;
 }
 

@@ -7,6 +7,7 @@
  var cursorY= 0;
  var tileManager;
  var colorList;
+ var layerList;
 
 
 function blit(hideCursor) {
@@ -18,48 +19,6 @@ function blit(hideCursor) {
 	ctx.fillRect(cursorX*80,cursorY*80,80,80);
 }
 
-/** setTile can be called in 2 instances:
-    when the tile needs redrawing because a different color was selected.
-    when a tile is picked.
-    
-    current implementation: tileID == null: different color selected,
-    fetch all attributes from model except color. tileId != null: different tile Selected.
-    take all input from function parameters (is gui controls).
-    
-    
-    target implementation: whenever the selection changes update all controls with value of the tile.
-    whenever any control (or tile) is clicked, always use all values from the control.
-    that way, it is not neccesary to track what the user has changed an what not.
-    
-    problem: colorlist = do we need to update all tiles when something in the colorlist changes?
-    
-    
-     
- */
-function setTile(activeSet,tileId,x,y,flipX,flipY) {
-	return; // dead code
-	
-  console.log("FLIP "+flipX+" "+flipY);
-	var ctx = backbuffer.getContext("2d");
-	var colors = colorList.getSelectedColors();
-	if (tileId==null) {
-			if (gDrawing[y][x]) {
-				tileId=gDrawing[y][x].tileId;
-				activeSet=gDrawing[y][x].activeSet;
-				flipX=gDrawing[y][x].flipX;
-				flipY=gDrawing[y][x].flipY;
-			}
-	}
-	if (tileId !=null) ctx.drawImage(tileManager.produceTile(activeSet,tileId,colors,80,80,flipX,flipY),x*80,y*80);
-	gDrawing[y][x] = {
-	  activeSet: activeSet,
-		tileId: tileId,
-		colors: colors,
-		flipX : flipX,
-		flipY : flipY
-	}
-	blit();
-}
 
 
 function setupControls() {
@@ -121,6 +80,12 @@ function setupControls() {
 					blit();
 		}
 	});
+	layerList = new LayerList($("#layerlist"),gDrawing, {
+		update: function () {
+		
+		}
+	});
+
 	updateTileList();
 }
 
@@ -167,15 +132,33 @@ function setupCanvas() {
 			$("#flip_v").attr("checked",tile.flipY);
 			if (tile.colorIndex!=null) colorList.selectedIndex=tile.colorIndex;
 			colorList.update();
+			layerList.update();
 			if (tile.activeSet != null) tileManager.activeSet = tile.activeSet;
 			updateTileList();
 		},
 		
-	  redraw: function(x,y,tile) {
-			var ctx = backbuffer.getContext("2d");
-			if (tile.tileId !=null)  {
-				ctx.drawImage(tileManager.produceTile(tile.activeSet,tile.tileId,tile.colors,80,80,tile.flipX,tile.flipY),x*80,y*80);
-	  	}
+	  redraw: function(x,y,tilelayers,layers) {
+	    
+	    // first render all layers into one canvas.
+	    var cvs = document.createElement("canvas");
+	    cvs.width =80;
+	    cvs.height = 80;
+	    var ctx = cvs.getContext("2d");
+			//ctx.fillStyle="rgb(128,128,128)"
+			//ctx.fillRect(0,0,cvs.width,cvs.height);
+			for (var i=0;i<layers.length;i++) {
+				ctx.globalCompositeOperation=layers[i].blend;
+				tile = tilelayers[i];
+				if (tile != null && tile.tileId != null) {
+					ctx.drawImage(tileManager.produceTile(tile.activeSet,tile.tileId,tile.colors,80,80,tile.flipX,tile.flipY),0,0);
+				
+				}
+			}
+			// blit this canvas in the backbuffer. 
+			var ctx2=backbuffer.getContext("2d");
+			ctx2.fillStyle="rgb(128,128,128)"
+			ctx2.fillRect(x*80,y*80,cvs.width,cvs.height);
+			ctx2.drawImage(cvs,x*80,y*80);
 	  }
 	});
 	
@@ -211,8 +194,8 @@ function setupCursor() {
 $(document).ready(function () {
 	
 	console.log("go for it");
-	setupControls()
 	setupCanvas();
+	setupControls()
 	setupCursor();
 });
 

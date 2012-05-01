@@ -87,14 +87,14 @@ ColorButton=function (color,updater) {
   	this.b = parseInt(m[3],10);
   	this.a = 255;
   }
-  else if  (m = color.match(/rgba\((\d+),(\d+),(\d+),(\d+)\)/)) {
+  else if  (m = color.match(/rgba\((\d+),(\d+),(\d+),([0-9\.]+)\)/)) {
   	this.r = parseInt(m[1],10);
   	this.g = parseInt(m[2],10);
   	this.b = parseInt(m[3],10);
-  	this.a = parseInt(m[4],10);
+  	this.a = parseFloat(m[4],10);
   }
   else {
-  	alert("color not matched : "+m);
+  	alert("color not matched : "+color);
   }
 }
 
@@ -144,7 +144,7 @@ ColorButton.prototype.toggleDialog=function () {
 			if (el.hasClass('red')) self.r=el.val();
 			if (el.hasClass('green')) self.g=el.val();
 			if (el.hasClass('blue')) self.b=el.val();
-			if (el.hasClass('alpha')) self.a=el.val();
+			if (el.hasClass('alpha')) self.a=(el.val()/255); // alpha = 0...1
 			self.update();		
 		});
 		div.on('click','.cancelbutton',function (e) {
