@@ -95,3 +95,8 @@ Drawing.prototype.setBlendMode=function(index,value) {
 	}
 }
 
+Drawing.prototype.setLayer=function(index) {
+		this.activeLayer=index;
+		this.updateTileInfo();
+}
+

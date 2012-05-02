@@ -32,7 +32,7 @@ div#flipping {
 }
 
 ul#colorlist li, ul#layerlist li {
-	padding:5px 5px 5px 30px;
+	padding:5px 5px 5px 50px;
 	border-bottom:1px solid #ccc;
 }
 
@@ -48,4 +48,9 @@ ul#colorlist li.selected, ul#layerlist li.selected {
 	padding:10px;
 	background:white;
 
+}
+
+.dialog input.slider {
+	width:255px;
+	margin-bottom:15px;
 }

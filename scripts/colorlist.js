@@ -107,7 +107,6 @@ ColorButton.prototype.render = function () {
 	var self=this;
 	this.button= $('<span style="display:inline-block;width:60px;height:30px;margin-left:5px;background:'+self.toRGBA()+'" >&nbsp</span>');
 	this.button.click(function () {
-	  alert('button clicked!'); 
 		self.toggleDialog();
 	});
 	return this.button;
@@ -134,7 +133,7 @@ ColorButton.prototype.toggleDialog=function () {
 		   + '<p><input class="red slider" type="range" min="0" max="255" value="'+self.r+'" /></p>'
 		   + '<p><input class="green slider" type="range" min="0" max="255" value="'+self.g+'" /></p>'
 		   + '<p><input class="blue slider" type="range" min="0" max="255" value="'+self.b+'" /></p>'
-		   + '<p><input class="alpha slider" type="range" min="0" max="255" value="'+self.a+'" /></p>'
+		   + '<p><input class="alpha slider" type="range" min="0" max="255" value="'+(self.a*255)+'" /></p>'
 			 + '<p><input type="button" class="closebutton" value="OK" /><input type="button" class="cancelbutton" value="Cancel" /></p>' 
 		+ '</div>');
 		self.dialog = div

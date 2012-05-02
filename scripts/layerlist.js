@@ -27,8 +27,7 @@ function LayerList(el,drawing,updater) {
   $('body').on('change','#layerlist li select',function (evt) {
   		var li=$(evt.target.parentElement);
   		var index = li.data('index');
-  		drawing.setBlendMode(index,$(evt.target).val());
-  		blit();
+  		updater.updateBlendMode(index,$(evt.target).val());
   });
 	
 }

@@ -81,8 +81,12 @@ function setupControls() {
 		}
 	});
 	layerList = new LayerList($("#layerlist"),gDrawing, {
-		update: function () {
-		
+		update: function (index) {
+			gDrawing.setLayer(index);
+		},
+		updateBlendMode: function (index,blendMode) {
+			gDrawing.setBlendMode(index,blendMode);
+  		blit();
 		}
 	});
 
