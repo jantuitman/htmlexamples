@@ -8,6 +8,10 @@
  var tileManager;
  var colorList;
  var layerList;
+ 
+ var flip_h;
+ var flip_v;
+ var vlip_c;
 
 
 function blit(hideCursor) {
@@ -50,17 +54,19 @@ function setupControls() {
 		blit();
 	});
 	
-	$("#flip_h").change(function (e) {
-			gDrawing.writeTile(cursorX,cursorY,{ flipX: ($("#flip_h").attr("checked") != null) }); 	
+	flip_h=new SwitchButton($("#flip_h"));
+	flip_h.change(function (e,value) {
+	    console.log("flip_h changed "+value);
+			gDrawing.writeTile(cursorX,cursorY,{ flipX: value }); 	
 			blit();
 			updateTileList();
 	});
-	$("#flip_v").change(function (e) {
-			gDrawing.writeTile(cursorX,cursorY,{ flipY: ($("#flip_v").attr("checked") != null) }); 	
+	flip_v=new SwitchButton($("#flip_v"));
+	flip_v.change(function (e,value) {
+			gDrawing.writeTile(cursorX,cursorY,{ flipY: value }); 	
 			blit();
 			updateTileList();
 	});
-	
 	
 	// color list
 	colorList = new ColorList($('#colorlist'), {
@@ -97,8 +103,8 @@ function setupControls() {
 // renders the tilelist.
 function updateTileList() {
 	var cc = colorList.getSelectedColors();
-	var flipX=($("#flip_h").attr("checked") != null);
-	var flipY=($("#flip_v").attr("checked") != null );
+	var flipX=flip_h.val();
+	var flipY=flip_v.val();
 	
 	$("#tilelist").html('');
 	$("#tilelist").append(tileManager.setSelector());
@@ -132,8 +138,8 @@ function setupCanvas() {
 		
 		update: function (tile)   {
 		  console.log("updating controls with tile",tile);
-			$("#flip_h").attr("checked",tile.flipX);
-			$("#flip_v").attr("checked",tile.flipY);
+			flip_h.val(tile.flipX);
+			flip_v.val(tile.flipY);
 			if (tile.colorIndex!=null) colorList.selectedIndex=tile.colorIndex;
 			colorList.update();
 			layerList.update();
@@ -196,6 +202,7 @@ function setupCursor() {
 
 
 $(document).ready(function () {
+
 	
 	console.log("go for it");
 	setupCanvas();

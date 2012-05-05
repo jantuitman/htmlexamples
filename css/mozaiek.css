@@ -26,9 +26,6 @@ div#flipping {
 	left:700px;
 	top:30px;
 	border:1px solid #ccc;
-	height:100px;
-	overflow-y:scroll;
-
 }
 
 ul#colorlist li, ul#layerlist li {
@@ -39,6 +36,7 @@ ul#colorlist li, ul#layerlist li {
 ul#colorlist li.selected, ul#layerlist li.selected {
 	background:#ccf;
 }
+
 
 .dialog {
 	position:absolute;
