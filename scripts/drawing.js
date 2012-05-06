@@ -37,6 +37,7 @@ Drawing.prototype.defaultsForTile=function(x,y) {
 	return {
 		flipX: false,
 		flipY: false, 
+		flipColor: false,
 		colorIndex: null,
 		colors : null, // when set, contains the actual colors. can be used to verify the colorIndex.
 		activeSet: null, // unset, so that the interface stays on the current selected tileset.

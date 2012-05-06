@@ -25,28 +25,27 @@ CardManager.prototype.setSelector=function () {
 	return selector;
 }
 
-CardManager.prototype.produceTile = function (setId,tileId,colors,width,height,flipX,flipY) {
+CardManager.prototype.produceTile = function (setId,tileId,colors,width,height,flipX,flipY,flipC) {
 		
 	var activeSet=this.sets[setId];
 	var canvas = document.createElement('canvas');
 	canvas.width  = width;
 	canvas.height = height;
-	this.render(canvas,activeSet,tileId,colors.color1,colors.color2,flipX,flipY)
+	this.render(canvas,activeSet,tileId,colors.color1,colors.color2,flipX,flipY,flipC)
 	return canvas;
 }
 
-CardManager.prototype.render=function (canvas,activeSet,index,color1,color2,flipX,flipY) {
+CardManager.prototype.render=function (canvas,activeSet,index,color1,color2,flipX,flipY,flipC) {
 		var params= {
 			canvas: canvas,
-			color1: color1,
-			color2: color2,
+			color1: flipC? color2 : color1,
+			color2: flipC? color1: color2,
 			ctx: canvas.getContext("2d"),
 			w : canvas.width,
 			h : canvas.height
 		}
 		// flipping coordinate spaces.
 		params.ctx.save();
-		console.log("flip "+flipX+" "+flipY);
 		if (flipX) {
 			params.ctx.translate(params.w,0);
 			params.ctx.scale(-1,1);
@@ -59,13 +58,25 @@ CardManager.prototype.render=function (canvas,activeSet,index,color1,color2,flip
 		var f = activeSet["render_"+index]
 		if (f) {
 		    // a canvas always begins in the background color.
-		    params.ctx.fillStyle = color2
-		    console.log("color2 = "+color2);
+		    params.ctx.fillStyle = params.color2
 		    params.ctx.fillRect(0,0,params.w,params.h);
-		    params.ctx.fillStyle = color1
-		    params.ctx.strokeStyle = color1
-			f(params);
-			params.ctx.restore();
+		    
+		    
+		    //now we carve out the foreground in the background.
+		    params.ctx.save();
+		    params.ctx.fillStyle = params.color1
+		    params.ctx.strokeStyle = params.color1
+		    params.ctx.globalCompositeOperation="source-out"
+				f(params);
+				params.ctx.restore();
+
+				// and we add it its own color.
+		    params.ctx.fillStyle = params.color1
+		    params.ctx.strokeStyle = params.color1
+		    params.ctx.globalCompositeOperation="source-over"
+				f(params);
+				// paired with outer ctx.save()
+				params.ctx.restore();
 			return true;
 		}
 		else {

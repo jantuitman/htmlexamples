@@ -44,8 +44,9 @@ function setupControls() {
 	$(document).on("click","#tilelist img",function (e) {
 		var img = $(e.target)
 		gDrawing.writeTile(cursorX,cursorY,{
-				flipX: ($("#flip_h").attr('checked') != null),
-				flipY: ($("#flip_v").attr('checked') != null),
+				flipX: flip_h.val(),
+				flipY: flip_v.val(),
+				flipColor: flip_c.val(),
 				activeSet: tileManager.activeSet,
 				tileId: img.data('tileId'),
 				colorIndex: colorList.selectedIndex, 
@@ -56,7 +57,6 @@ function setupControls() {
 	
 	flip_h=new SwitchButton($("#flip_h"));
 	flip_h.change(function (e,value) {
-	    console.log("flip_h changed "+value);
 			gDrawing.writeTile(cursorX,cursorY,{ flipX: value }); 	
 			blit();
 			updateTileList();
@@ -64,6 +64,12 @@ function setupControls() {
 	flip_v=new SwitchButton($("#flip_v"));
 	flip_v.change(function (e,value) {
 			gDrawing.writeTile(cursorX,cursorY,{ flipY: value }); 	
+			blit();
+			updateTileList();
+	});
+	flip_c=new SwitchButton($("#flip_c"));
+	flip_c.change(function (e,value) {
+			gDrawing.writeTile(cursorX,cursorY,{ flipColor: value }); 	
 			blit();
 			updateTileList();
 	});
@@ -105,6 +111,7 @@ function updateTileList() {
 	var cc = colorList.getSelectedColors();
 	var flipX=flip_h.val();
 	var flipY=flip_v.val();
+	var flipC=flip_c.val();
 	
 	$("#tilelist").html('');
 	$("#tilelist").append(tileManager.setSelector());
@@ -114,7 +121,8 @@ function updateTileList() {
 		var c=document.createElement("canvas");
 		c.width = 80
 		c.height = 80
-		if (! tileManager.render(c,tileManager.getSet(),i,cc.color1,cc.color2,flipX,flipY)) break;
+		
+		if (! tileManager.render(c,tileManager.getSet(),i,cc.color1,cc.color2,flipX,flipY,flipC)) break;
 		var dataUrl =  c.toDataURL("image/png");
 		var img = document.createElement('img');
 		img.src = dataUrl;
@@ -140,6 +148,7 @@ function setupCanvas() {
 		  console.log("updating controls with tile",tile);
 			flip_h.val(tile.flipX);
 			flip_v.val(tile.flipY);
+			flip_c.val(tile.flipColor);
 			if (tile.colorIndex!=null) colorList.selectedIndex=tile.colorIndex;
 			colorList.update();
 			layerList.update();
@@ -160,7 +169,8 @@ function setupCanvas() {
 				ctx.globalCompositeOperation=layers[i].blend;
 				tile = tilelayers[i];
 				if (tile != null && tile.tileId != null) {
-					ctx.drawImage(tileManager.produceTile(tile.activeSet,tile.tileId,tile.colors,80,80,tile.flipX,tile.flipY),0,0);
+					
+					ctx.drawImage(tileManager.produceTile(tile.activeSet,tile.tileId,tile.colors,80,80,tile.flipX,tile.flipY,tile.flipColor),0,0);
 				
 				}
 			}
