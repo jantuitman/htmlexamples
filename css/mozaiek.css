@@ -1,36 +1,74 @@
+.tilelist {
+	margin-left:20px;
+	max-width:90%;
+	overflow-x:scroll;
+	border: 2px inset;
+	white-space:nowrap;
+	-webkit-overflow-scrolling: touch;
+}
+
+#tilesetSelector {
+	vertical-align:top;
+	margin-top:10px;
+}
+
 .tilelist img {
 	margin:5px;
 	
 }
 
+div.tabbar {
+	height:60px;
+	background:#eee;
+	overflow:hidden;
+}
+
+div.tabbar span {
+  display:inline-block;
+  color:white;
+  background:#888;
+	margin-left:3px;
+	margin-top:24px;
+	margin-right:0px;
+	height:40px;
+	border:2px solid #ccf;
+	border-radius:10px;
+	padding-top:6px;
+	padding-left:10px;
+	padding-right:10px;
+	
+}
+
+div.tabbar span.selected {
+	border:2px solid #88f;
+  background:white;
+  color:blue;
+	
+}
+
 ul#colorlist {
-	position:absolute;
-	left:500px;
-	top:30px;
 	border:1px solid #ccc;
-	height:400px;
+	height:250px;
+	display:block;
 	overflow-y:scroll;
 }
 
+
 ul#layerlist {
-	position:absolute;
-	left:700px;
-	top:150px;
 	border:1px solid #ccc;
 	height:250px;
+	display:none;
 	overflow-y:scroll;
 }
 
 div#flipping {
-	position:absolute;
-	left:700px;
-	top:30px;
 	border:1px solid #ccc;
 }
 
 ul#colorlist li, ul#layerlist li {
 	padding:5px 5px 5px 50px;
 	border-bottom:1px solid #ccc;
+	background:white;
 }
 
 ul#colorlist li.selected, ul#layerlist li.selected {
@@ -52,3 +90,64 @@ ul#colorlist li.selected, ul#layerlist li.selected {
 	width:255px;
 	margin-bottom:15px;
 }
+
+
+body {
+	background:#ccc;
+	font:14px verdana;
+}
+
+div.mainPanel {
+	background:#eee;
+}
+
+canvas#mainCanvas {
+	padding-top:10px;
+	display:block;
+	align:center;
+	margin-left:auto;
+	margin-right:auto;
+}
+
+@media all and (orientation: portrait) {
+	div.mainPanel {
+		width:768px;
+		height:512px;
+	}
+	
+	div.tilePanel {
+		width:512px;
+		min-height:200px;
+	}
+
+	div.colorPanel  {
+		position:absolute;
+		left:512px;
+		top:512px;
+		width:256px;
+		min-height:256px;
+	}
+
+}
+
+@media all and (orientation: landscape) {
+	div.mainPanel {
+		width:768px;
+		height:512px;
+	}
+	
+	div.tilePanel {
+		width:1024px;
+		min-height:200px;
+	}
+
+	div.colorPanel  {
+		position:absolute;
+		left:768px;
+		top:0px;
+		width:256px;
+		min-height:256px;
+	}
+}
+
+
