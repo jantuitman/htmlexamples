@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0">	
+	<script src="scripts/ios_core.js"></script>
+	<script>
+	   var iOS =  (navigator.userAgent.indexOf("iPad") >=0 || navigator.userAgent.indexOf("iPhone") >=0);
+	   function is_iOS() {
+	   		return  (navigator.userAgent.indexOf("iPad") >=0 || navigator.userAgent.indexOf("iPhone") >=0);
+	   }
+	   function is_uiwebkit() {
+	   	return is_iOS() && (navigator.userAgent.indexOf("Safari") < 0)
+	   }
+	   
+	   if (is_uiwebkit()) {
+	   		ios_core.install();
+	   		console.log("dit is een test");
+	   } 	
+	</script>
+	<script src="scripts/jquery-1.7.2.js"></script>
+	<script src="scripts/instrument.js"></script>
+	<script src="scripts/score.js"></script>
+	<script src="scripts/main.js"></script>
+	<link rel="stylesheet" href="css/reset.css" type="text/css" />
+	<link rel="stylesheet" href="css/mozaiek.css" type="text/css" />
+  </head>
+  <body>
+
+  </body>
+</html>
