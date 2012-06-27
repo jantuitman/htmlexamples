@@ -3,7 +3,7 @@ function Score(context) {
 	this.startTime = 0;
 	this.notes = [];
 	this.instruments = {};
-	this.bpm = 60;
+	this.bpm = 40;
 	this.ticksperbeat = 120;
 	this.currentPos = 0;
 	this.notesToSeconds = 60 / this.bpm / this.ticksperbeat
